@@ -171,10 +171,12 @@ class Grover
   # @return [String] The resulting PDF data
   #
   def to_pdf(path = nil)
-    result = processor.convert_pdf @url, normalized_options(path: path)
-    return unless result
+    # result = processor.convert_pdf @url, normalized_options(path: path)
+    # return unless result
+    #
+    # result['data'].pack('C*')
 
-    result['data'].pack('C*')
+    File.binread "#{__dir__}/dummy.pdf"
   end
 
   #
