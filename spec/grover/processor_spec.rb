@@ -382,6 +382,51 @@ describe Grover::Processor do
           it { expect(pdf_text_content).to include '1. grover-test nom nom nom' }
           it { expect(pdf_text_content).to include '2. escaped &==' }
         end
+
+        context 'when passing addStyleTag and addScriptTag option' do
+          let(:url_or_html) do
+            <<-HTML
+              <html>
+                <body>
+                  <span id='span'></span>
+                </body>
+              </html>
+            HTML
+          end
+
+          let(:expected) { 'font-size: 22px;' }
+          let(:style) { "#span { #{expected} }" }
+          let(:script) do
+            <<-JS
+              element = document.getElementById('span')
+              element.innerText = 'font-size: ' + getComputedStyle(element).fontSize + ';'
+            JS
+          end
+
+          context 'with content text' do
+            let(:options) do
+              {
+                'addStyleTag' => { 'content' => style },
+                'addScriptTag' => { 'content' => script }
+              }
+            end
+
+            it { expect(pdf_text_content).to eq expected }
+          end
+
+          context 'with content file-path' do
+            let(:style_file) { Tempfile.open { |t| t << style } }
+            let(:script_file) { Tempfile.open { |t| t << script } }
+            let(:options) do
+              {
+                'addStyleTag' => { 'path' => style_file.path },
+                'addScriptTag' => { 'path' => script_file.path }
+              }
+            end
+
+            it { expect(pdf_text_content).to eq expected }
+          end
+        end
       end
 
       context 'when HTML includes screen only content' do
