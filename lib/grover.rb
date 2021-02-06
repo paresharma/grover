@@ -84,6 +84,15 @@ class Grover
   end
 
   #
+  # Request URL with provided options and create HTML
+  #
+  # @return [String] The resulting HTML of the body
+  #
+  def to_html
+    processor.convert :content, @url, normalized_options(path: nil)
+  end
+
+  #
   # Returns whether a front cover (request) path has been specified in the options
   #
   # @return [Boolean] Front cover path is configured
